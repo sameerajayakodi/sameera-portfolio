@@ -8,7 +8,12 @@ const app = express();
 
 app.use(express.json());
 
-// Use /tmp for writable storage on Vercel (serverless is read-only except /tmp)
+// Dual-write storage paths (local project folder + /tmp fallback for serverless)
+const LOCAL_DATA_DIR = path.join(process.cwd(), "data");
+const LOCAL_MESSAGES_FILE = path.join(LOCAL_DATA_DIR, "messages.json");
+const LOCAL_ANALYTICS_FILE = path.join(LOCAL_DATA_DIR, "analytics.json");
+const LOCAL_ARTICLES_FILE = path.join(LOCAL_DATA_DIR, "articles.json");
+
 const DATA_DIR = path.join("/tmp", "data");
 if (!fs.existsSync(DATA_DIR)) {
   fs.mkdirSync(DATA_DIR, { recursive: true });
@@ -38,12 +43,38 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 app.use("/uploads", express.static(UPLOADS_DIR));
 
-// Seed default data files if they don't exist (serverless cold start)
+// Helper for dual reading
+function readFromEither(filenameLocal: string, filenameVercel: string): string {
+  if (fs.existsSync(filenameLocal)) {
+    try {
+      return fs.readFileSync(filenameLocal, "utf-8");
+    } catch {
+      // Fallback
+    }
+  }
+  return fs.readFileSync(filenameVercel, "utf-8");
+}
+
+// Helper for dual writing
+function writeToBoth(filenameLocal: string, filenameVercel: string, data: string) {
+  fs.writeFileSync(filenameVercel, data);
+  try {
+    const dir = path.dirname(filenameLocal);
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
+    }
+    fs.writeFileSync(filenameLocal, data);
+  } catch (err) {
+    console.log("Local write skipped (read-only environment):", err);
+  }
+}
+
+// Seed default data files if they don't exist
 if (!fs.existsSync(MESSAGES_FILE)) {
-  fs.writeFileSync(MESSAGES_FILE, JSON.stringify([], null, 2));
+  writeToBoth(LOCAL_MESSAGES_FILE, MESSAGES_FILE, JSON.stringify([], null, 2));
 }
 if (!fs.existsSync(ARTICLES_FILE)) {
-  fs.writeFileSync(ARTICLES_FILE, JSON.stringify([], null, 2));
+  writeToBoth(LOCAL_ARTICLES_FILE, ARTICLES_FILE, JSON.stringify([], null, 2));
 }
 if (!fs.existsSync(ANALYTICS_FILE)) {
   const initialAnalytics = {
@@ -61,7 +92,7 @@ if (!fs.existsSync(ANALYTICS_FILE)) {
       { type: "page_view", page: "projects", timestamp: new Date(Date.now() - 3600000 * 20).toISOString() },
     ],
   };
-  fs.writeFileSync(ANALYTICS_FILE, JSON.stringify(initialAnalytics, null, 2));
+  writeToBoth(LOCAL_ANALYTICS_FILE, ANALYTICS_FILE, JSON.stringify(initialAnalytics, null, 2));
 }
 
 // Lazy Gemini API Client Initialization
@@ -170,7 +201,7 @@ const BLOG_POSTS = [
 // Helper functions
 function getAnalyticsData() {
   try {
-    return JSON.parse(fs.readFileSync(ANALYTICS_FILE, "utf-8"));
+    return JSON.parse(readFromEither(LOCAL_ANALYTICS_FILE, ANALYTICS_FILE));
   } catch {
     return { totalViews: 0, pageViews: {}, chatbotInteractions: 0, submissionsCount: 0, events: [] };
   }
@@ -178,21 +209,22 @@ function getAnalyticsData() {
 
 function saveAnalyticsData(data: any) {
   try {
-    fs.writeFileSync(ANALYTICS_FILE, JSON.stringify(data, null, 2));
+    writeToBoth(LOCAL_ANALYTICS_FILE, ANALYTICS_FILE, JSON.stringify(data, null, 2));
   } catch (e) {
     console.error("Failed to save analytics", e);
   }
 }
 
 function getArticles() {
-  if (fs.existsSync(ARTICLES_FILE)) {
-    return JSON.parse(fs.readFileSync(ARTICLES_FILE, "utf-8"));
+  try {
+    return JSON.parse(readFromEither(LOCAL_ARTICLES_FILE, ARTICLES_FILE));
+  } catch {
+    return [];
   }
-  return [];
 }
 
 function saveArticles(data: any) {
-  fs.writeFileSync(ARTICLES_FILE, JSON.stringify(data, null, 2));
+  writeToBoth(LOCAL_ARTICLES_FILE, ARTICLES_FILE, JSON.stringify(data, null, 2));
 }
 
 // ── API Routes ──
@@ -217,9 +249,9 @@ app.post("/api/contact", (req, res) => {
       message,
       timestamp: new Date().toISOString(),
     };
-    const messages = JSON.parse(fs.readFileSync(MESSAGES_FILE, "utf-8"));
+    const messages = JSON.parse(readFromEither(LOCAL_MESSAGES_FILE, MESSAGES_FILE));
     messages.push(newMessage);
-    fs.writeFileSync(MESSAGES_FILE, JSON.stringify(messages, null, 2));
+    writeToBoth(LOCAL_MESSAGES_FILE, MESSAGES_FILE, JSON.stringify(messages, null, 2));
 
     const analytics = getAnalyticsData();
     analytics.submissionsCount = (analytics.submissionsCount || 0) + 1;
@@ -234,7 +266,7 @@ app.post("/api/contact", (req, res) => {
 
 app.get("/api/contact/messages", (req, res) => {
   try {
-    const messages = JSON.parse(fs.readFileSync(MESSAGES_FILE, "utf-8"));
+    const messages = JSON.parse(readFromEither(LOCAL_MESSAGES_FILE, MESSAGES_FILE));
     res.json(messages);
   } catch (error: any) {
     res.status(500).json({ error: error.message });
@@ -291,6 +323,16 @@ app.post("/api/admin/cv/upload", upload.single("cv"), (req, res) => {
   try {
     if (!req.file) {
       return res.status(400).json({ error: "No file uploaded." });
+    }
+    // Also save CV directly to local project uploads folder if writable
+    try {
+      const localUploadsDir = path.join(process.cwd(), "uploads");
+      if (!fs.existsSync(localUploadsDir)) {
+        fs.mkdirSync(localUploadsDir, { recursive: true });
+      }
+      fs.copyFileSync(req.file.path, path.join(localUploadsDir, "cv.pdf"));
+    } catch (err) {
+      console.log("Local CV copy skipped (read-only environment):", err);
     }
     res.json({ message: "CV uploaded successfully", path: `/uploads/cv.pdf` });
   } catch (error: any) {
@@ -472,12 +514,16 @@ app.post("/api/simulate-node", async (req, res) => {
 
 app.get("/api/resume/check", (req, res) => {
   const cvPath = path.join(UPLOADS_DIR, "cv.pdf");
-  res.json({ exists: fs.existsSync(cvPath) });
+  const localCvPath = path.join(process.cwd(), "uploads", "cv.pdf");
+  res.json({ exists: fs.existsSync(localCvPath) || fs.existsSync(cvPath) });
 });
 
 app.get("/api/resume/download", (req, res) => {
   const cvPath = path.join(UPLOADS_DIR, "cv.pdf");
-  if (fs.existsSync(cvPath)) {
+  const localCvPath = path.join(process.cwd(), "uploads", "cv.pdf");
+  if (fs.existsSync(localCvPath)) {
+    return res.download(localCvPath, "Sameera_Jayakodi_Resume.pdf");
+  } else if (fs.existsSync(cvPath)) {
     return res.download(cvPath, "Sameera_Jayakodi_Resume.pdf");
   }
   const resumeText = `
