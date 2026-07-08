@@ -59,7 +59,7 @@ export async function generateResumePDF() {
   doc.text(contacts, margin, y);
   y += 4;
 
-  const links = "GitHub: github.com/sameerajayakodi  |  LinkedIn: linkedin.com/sameera-jayakodi";
+  const links = "GitHub: github.com/sameerajayakodi  |  LinkedIn: linkedin.com/in/sameera-jayakodi-6a3a81226";
   doc.text(links, margin, y);
   y += 6;
 

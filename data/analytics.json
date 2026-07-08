@@ -1,7 +1,7 @@
 {
-  "totalViews": 432,
+  "totalViews": 433,
   "pageViews": {
-    "home": 198,
+    "home": 199,
     "projects": 114,
     "blog": 68,
     "analytics": 45
@@ -183,6 +183,13 @@
       "element": "",
       "payload": {},
       "timestamp": "2026-07-08T13:45:55.994Z"
+    },
+    {
+      "type": "page_view",
+      "page": "home",
+      "element": "",
+      "payload": {},
+      "timestamp": "2026-07-08T14:09:46.320Z"
     }
   ]
 }

@@ -103,7 +103,7 @@ Email: sameerajayakodi456@gmail.com
 Phone: +94 770309842
 Location: Homagama, Sri Lanka
 GitHub: github.com/sameerajayakodi
-LinkedIn: linkedin.com/sameera-jayakodi
+LinkedIn: linkedin.com/in/sameera-jayakodi-6a3a81226
 
 Core Bio:
 Full-Stack Software Engineer with 1 year of hands-on experience delivering production web and mobile applications end-to-end from requirement gathering and system design through development, deployment, and support. Built and shipped five+ systems spanning fleet management, compliance, e-learning, HR, and bidding domains using React, Node.js, Spring Boot, and both relational and NoSQL databases. Extended into AI/automation with secured MCP server integrations, an AI-driven WhatsApp CRM, and a no-code chatbot flow builder. Comfortable with AWS, Docker, and Linux-based deployment. Thrives in agile teams and client-facing delivery.
@@ -631,7 +631,7 @@ SAMEERA JAYAKODI - ASSOCIATE SOFTWARE ENGINEER RESUME
 Location: Homagama, Sri Lanka
 Email: sameerajayakodi456@gmail.com
 Phone: +94 770309842
-LinkedIn: linkedin.com/sameera-jayakodi
+LinkedIn: linkedin.com/in/sameera-jayakodi-6a3a81226
 GitHub: github.com/sameerajayakodi
 
 ------------------------------------------------------------------

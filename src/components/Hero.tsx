@@ -142,7 +142,7 @@ export default function Hero({ onOpenChat, setActiveSection }: HeroProps) {
                 <Github className="h-5 w-5" />
               </a>
               <a
-                href="https://linkedin.com/sameera-jayakodi"
+                href="https://www.linkedin.com/in/sameera-jayakodi-6a3a81226/"
                 target="_blank"
                 rel="noreferrer"
                 className="rounded-lg p-2 text-neutral-400 hover:bg-neutral-100 hover:text-neutral-900 dark:hover:bg-white/5 dark:hover:text-white transition"
