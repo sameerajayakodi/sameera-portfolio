@@ -1,0 +1,188 @@
+{
+  "totalViews": 432,
+  "pageViews": {
+    "home": 198,
+    "projects": 114,
+    "blog": 68,
+    "analytics": 45
+  },
+  "chatbotInteractions": 39,
+  "submissionsCount": 2,
+  "events": [
+    {
+      "type": "page_view",
+      "page": "home",
+      "timestamp": "2026-07-07T13:14:55.720Z"
+    },
+    {
+      "type": "page_view",
+      "page": "projects",
+      "timestamp": "2026-07-07T17:14:55.721Z"
+    },
+    {
+      "type": "page_view",
+      "page": "home",
+      "element": "",
+      "payload": {},
+      "timestamp": "2026-07-08T13:23:11.691Z"
+    },
+    {
+      "type": "btn_click",
+      "page": "",
+      "element": "float_chat_btn",
+      "payload": {},
+      "timestamp": "2026-07-08T13:23:38.540Z"
+    },
+    {
+      "type": "chat_ask",
+      "query": "hi",
+      "timestamp": "2026-07-08T13:23:43.775Z"
+    },
+    {
+      "type": "chat_ask",
+      "query": "who are sameera",
+      "timestamp": "2026-07-08T13:24:02.075Z"
+    },
+    {
+      "type": "chat_ask",
+      "query": "give me best project",
+      "timestamp": "2026-07-08T13:24:19.159Z"
+    },
+    {
+      "type": "chat_ask",
+      "query": "give me one key project",
+      "timestamp": "2026-07-08T13:25:06.158Z"
+    },
+    {
+      "type": "btn_click",
+      "page": "",
+      "element": "download_cv",
+      "payload": {},
+      "timestamp": "2026-07-08T13:25:34.634Z"
+    },
+    {
+      "type": "btn_click",
+      "page": "",
+      "element": "download_cv",
+      "payload": {},
+      "timestamp": "2026-07-08T13:25:36.285Z"
+    },
+    {
+      "type": "btn_click",
+      "page": "",
+      "element": "hero_get_in_touch",
+      "payload": {},
+      "timestamp": "2026-07-08T13:26:06.093Z"
+    },
+    {
+      "type": "btn_click",
+      "page": "",
+      "element": "float_chat_btn",
+      "payload": {},
+      "timestamp": "2026-07-08T13:29:32.811Z"
+    },
+    {
+      "type": "page_view",
+      "page": "home",
+      "element": "",
+      "payload": {},
+      "timestamp": "2026-07-08T13:31:02.008Z"
+    },
+    {
+      "type": "page_view",
+      "page": "home",
+      "element": "",
+      "payload": {},
+      "timestamp": "2026-07-08T13:33:55.248Z"
+    },
+    {
+      "type": "page_view",
+      "page": "home",
+      "element": "",
+      "payload": {},
+      "timestamp": "2026-07-08T13:34:09.674Z"
+    },
+    {
+      "type": "btn_click",
+      "page": "",
+      "element": "float_chat_btn",
+      "payload": {},
+      "timestamp": "2026-07-08T13:34:14.077Z"
+    },
+    {
+      "type": "chat_ask",
+      "query": "How can I hire or contact Sameera?",
+      "timestamp": "2026-07-08T13:34:21.713Z"
+    },
+    {
+      "type": "page_view",
+      "page": "home",
+      "element": "",
+      "payload": {},
+      "timestamp": "2026-07-08T13:35:45.112Z"
+    },
+    {
+      "type": "page_view",
+      "page": "home",
+      "element": "",
+      "payload": {},
+      "timestamp": "2026-07-08T13:35:47.999Z"
+    },
+    {
+      "type": "page_view",
+      "page": "home",
+      "element": "",
+      "payload": {},
+      "timestamp": "2026-07-08T13:35:49.551Z"
+    },
+    {
+      "type": "page_view",
+      "page": "home",
+      "element": "",
+      "payload": {},
+      "timestamp": "2026-07-08T13:35:50.622Z"
+    },
+    {
+      "type": "page_view",
+      "page": "home",
+      "element": "",
+      "payload": {},
+      "timestamp": "2026-07-08T13:35:51.685Z"
+    },
+    {
+      "type": "page_view",
+      "page": "home",
+      "element": "",
+      "payload": {},
+      "timestamp": "2026-07-08T13:37:24.136Z"
+    },
+    {
+      "type": "page_view",
+      "page": "home",
+      "element": "",
+      "payload": {},
+      "timestamp": "2026-07-08T13:37:52.772Z"
+    },
+    {
+      "type": "page_view",
+      "page": "home",
+      "element": "",
+      "payload": {},
+      "timestamp": "2026-07-08T13:38:48.472Z"
+    },
+    {
+      "type": "btn_click",
+      "page": "",
+      "element": "float_chat_btn",
+      "payload": {},
+      "timestamp": "2026-07-08T13:39:00.195Z"
+    },
+    {
+      "type": "page_view",
+      "page": "home",
+      "element": "",
+      "payload": {},
+      "timestamp": "2026-07-08T13:45:55.994Z"
+    }
+  ]
+}

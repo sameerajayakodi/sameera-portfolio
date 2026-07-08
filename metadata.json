@@ -1,0 +1,6 @@
+{
+  "name": "Sameera Jayakodi Portfolio",
+  "description": "The professional portfolio website of Sameera Jayakodi, an Associate Software Engineer featuring project highlights, an AI assistant chatbot, a blog, and live analytics.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
