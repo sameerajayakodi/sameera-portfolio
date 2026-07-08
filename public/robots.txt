@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://sameera-portfolio-6uyb.vercel.app/sitemap.xml
