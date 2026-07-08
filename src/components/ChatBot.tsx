@@ -160,9 +160,14 @@ export default function ChatBot({ isOpen, onClose }: ChatBotProps) {
           history: historyPayload,
         }),
       })
-        .then((res) => {
-          if (!res.ok) throw new Error("API call failed");
-          return res.json();
+        .then(async (res) => {
+          const data = await res.json();
+          if (res.status === 429) {
+            const waitSec = data.retryAfterSec || 60;
+            throw new Error(`RATE_LIMIT:${waitSec}`);
+          }
+          if (!res.ok) throw new Error(data.error || "API call failed");
+          return data;
         })
         .then((data) => {
           const modelMsg: ChatMessage = {
@@ -178,10 +183,18 @@ export default function ChatBot({ isOpen, onClose }: ChatBotProps) {
         })
         .catch((err) => {
           console.error("AI Assistant Error:", err);
+          let errorText =
+            "⚠️ **Connection Notice:** It looks like there was a momentary glitch connecting to Sameera's AI node. Please try again!\n\n*(Check if your internet is stable, or ensure a valid GEMINI_API_KEY is configured inside Settings > Secrets in AI Studio!)*";
+
+          if (err.message?.startsWith("RATE_LIMIT:")) {
+            const waitSec = parseInt(err.message.split(":")[1], 10) || 60;
+            errorText = `⏳ **Slow down!** You've reached the message limit to protect API usage.\n\nPlease wait **${waitSec} seconds** before sending another message. This helps keep the AI assistant free for everyone! 🙏`;
+          }
+
           const errorMsg: ChatMessage = {
             id: "err_" + Date.now(),
             role: "model",
-            text: "⚠️ **Connection Notice:** It looks like there was a momentary glitch connecting to Sameera's AI node. Please try again!\n\n*(Check if your internet is stable, or ensure a valid GEMINI_API_KEY is configured inside Settings > Secrets in AI Studio!)*",
+            text: errorText,
             timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
           };
           setMessages((prev) => [...prev, errorMsg]);

@@ -350,7 +350,43 @@ app.delete("/api/admin/articles/:id", (req, res) => {
   }
 });
 
+// ── Rate Limiter ──
+const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
+
+function checkRateLimit(key: string, maxRequests: number, windowMs: number): { allowed: boolean; retryAfterSec: number } {
+  const now = Date.now();
+  const entry = rateLimitMap.get(key);
+
+  if (rateLimitMap.size > 500) {
+    for (const [k, val] of rateLimitMap) {
+      if (now > val.resetAt) rateLimitMap.delete(k);
+    }
+  }
+
+  if (!entry || now > entry.resetAt) {
+    rateLimitMap.set(key, { count: 1, resetAt: now + windowMs });
+    return { allowed: true, retryAfterSec: 0 };
+  }
+
+  if (entry.count >= maxRequests) {
+    const retryAfterSec = Math.ceil((entry.resetAt - now) / 1000);
+    return { allowed: false, retryAfterSec };
+  }
+
+  entry.count++;
+  return { allowed: true, retryAfterSec: 0 };
+}
+
 app.post("/api/chat", async (req, res) => {
+  const clientIp = req.ip || req.socket.remoteAddress || "unknown";
+  const { allowed, retryAfterSec } = checkRateLimit(`chat:${clientIp}`, 10, 60_000);
+  if (!allowed) {
+    return res.status(429).json({
+      error: "rate_limit",
+      message: `You're sending messages too quickly. Please wait ${retryAfterSec} seconds before trying again.`,
+      retryAfterSec,
+    });
+  }
   try {
     const { message, history } = req.body;
     if (!message) {
@@ -397,6 +433,15 @@ app.post("/api/chat", async (req, res) => {
 });
 
 app.post("/api/simulate-node", async (req, res) => {
+  const clientIp = req.ip || req.socket.remoteAddress || "unknown";
+  const { allowed, retryAfterSec } = checkRateLimit(`sim:${clientIp}`, 5, 60_000);
+  if (!allowed) {
+    return res.status(429).json({
+      error: "rate_limit",
+      message: `Rate limit exceeded. Please wait ${retryAfterSec} seconds.`,
+      retryAfterSec,
+    });
+  }
   try {
     const { prompt, input } = req.body;
     if (!prompt) {
