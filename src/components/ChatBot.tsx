@@ -225,10 +225,10 @@ export default function ChatBot({ isOpen, onClose }: ChatBotProps) {
 
   return (
     <div
-      className={`fixed bottom-6 right-6 z-50 flex flex-col overflow-hidden rounded-3xl border shadow-2xl
-        w-full max-w-[420px] h-[600px]
-        border-neutral-200/60 bg-white/95 backdrop-blur-xl
-        dark:border-neutral-800/60 dark:bg-neutral-950/95
+      className={`fixed z-50 flex flex-col overflow-hidden bg-white/95 backdrop-blur-xl dark:bg-neutral-950/95
+        inset-0 w-full h-full rounded-none border-0
+        sm:inset-auto sm:bottom-6 sm:right-6 sm:w-full sm:max-w-[420px] sm:h-[600px] sm:rounded-3xl sm:border sm:border-neutral-200/60 dark:sm:border-neutral-800/60
+        shadow-2xl
         ${isClosing ? "animate-chatClose" : "animate-chatOpen"}
       `}
       id="ai-assistant-panel"
@@ -352,7 +352,7 @@ export default function ChatBot({ isOpen, onClose }: ChatBotProps) {
       </div>
 
       {/* ── Footer ── */}
-      <div className="border-t border-neutral-100/80 bg-white/90 px-4 py-3 backdrop-blur-sm dark:border-neutral-800/50 dark:bg-neutral-950/90">
+      <div className="border-t border-neutral-100/80 bg-white/90 px-4 pt-3 pb-6 sm:pb-3 backdrop-blur-sm dark:border-neutral-800/50 dark:bg-neutral-950/90">
         {/* Suggested Questions */}
         {messages.length === 1 && (
           <div className="mb-3 flex flex-wrap gap-1.5">
@@ -411,7 +411,7 @@ export default function ChatBot({ isOpen, onClose }: ChatBotProps) {
         </form>
 
         {/* Keyboard shortcut hint */}
-        <p className="mt-1.5 text-center text-[8px] text-neutral-300 dark:text-neutral-700">
+        <p className="hidden sm:block mt-1.5 text-center text-[8px] text-neutral-300 dark:text-neutral-700">
           Press <kbd className="rounded border border-neutral-200 px-1 py-0.5 font-mono dark:border-neutral-800">Enter</kbd> to send · <kbd className="rounded border border-neutral-200 px-1 py-0.5 font-mono dark:border-neutral-800">Esc</kbd> to close
         </p>
       </div>
